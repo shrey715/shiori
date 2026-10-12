@@ -1,9 +1,10 @@
 # Private planning notes
 PLAN.md
 
-# Symlinks to /ssd_scratch (venv, model weights, data)
+# Symlinks to /ssd_scratch (venv, model weights)
 .venv
 models
+# data/ holds the copyrighted ICC PDF and chunks built from it; never commit
 data
 
 # outputs/ is tracked (result tables for the report); skip regenerable binaries

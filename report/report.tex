@@ -1,0 +1,46 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\title{RAG Assignment: Baseline vs.\ Re-Ranking}
+\author{Shreyas Deb}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{Repository:} % GitHub link
+\\
+\textbf{Document:} ICC Men's T20 World Cup 2026 Playing Conditions
+
+\section*{Setup}
+% Document, chunking (versions A and B), bi-encoder, cross-encoder, LLM, hardware
+
+\section{Architecture Comparison}
+% Brief: the core difference between a Bi-Encoder (independent embeddings, cosine similarity)
+% and a Cross-Encoder (joint self-attention across tokens).
+
+\section{Qualitative \& Rank Shift Analysis}
+
+\subsection{Rank shifts for failure queries}
+% Brief: document the rank changes for your failure queries (e.g. Chunk X moved from Rank #8 -> Rank #1).
+% Failure types: keyword trap / distractor, exceptions & corner cases, negation & constraints,
+% other document-specific failures (vital chunk buried at ranks 4-10).
+
+\subsection{Answer 1 vs.\ Answer 2}
+% Brief: did the baseline hallucinate, omit an essential clause, or misstate a rule
+% because the critical chunk sat outside the top 3?
+
+\section{Latency Profiling}
+% Brief: record and tabulate the runtime of the baseline retrieval vs. the re-ranking pipeline.
+
+\section{Scaling Question}
+% Brief: why we do not simply run a Cross-Encoder across the entire document collection from the start.
+
+\end{document}
