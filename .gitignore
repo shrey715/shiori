@@ -1,0 +1,26 @@
+# Private planning notes
+PLAN.md
+
+# Symlinks to /ssd_scratch (venv, model weights, data)
+.venv
+models
+data
+
+# outputs/ is tracked (result tables for the report); skip regenerable binaries
+outputs/*.faiss
+outputs/*.npy
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python / Jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store

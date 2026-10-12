@@ -1,0 +1,15 @@
+# Top-level dependencies. Lock with uv pip compile -> requirements.txt
+# torch is installed separately from the PyTorch CUDA index (see README)
+torch==2.11.0
+sentence-transformers
+transformers
+accelerate
+pymupdf
+faiss-cpu
+numpy
+pandas
+tqdm
+python-dotenv
+huggingface_hub
+jupyter
+ipykernel
