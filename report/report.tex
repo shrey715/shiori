@@ -1,42 +1,71 @@
 \documentclass[10pt,a4paper]{article}
 
-\usepackage[margin=2cm]{geometry}
-\usepackage[T1]{fontenc}
-\usepackage{lmodern}
+% ---------- layout & fonts ----------
+\usepackage[a4paper, margin=2cm, headheight=14pt]{geometry}
+\usepackage{fontspec}
+\setmainfont{XCharter}[Extension=.otf, UprightFont=*-Roman, BoldFont=*-Bold, ItalicFont=*-Italic, BoldItalicFont=*-BoldItalic]
+\setsansfont{texgyreheros}[Extension=.otf, UprightFont=*-regular, BoldFont=*-bold, ItalicFont=*-italic, BoldItalicFont=*-bolditalic, Scale=0.92]
+\setmonofont{DejaVuSansMono}[Extension=.ttf, BoldFont=*-Bold, Scale=0.82]
 \usepackage{microtype}
-\usepackage{booktabs}
-\usepackage{array}
-\usepackage{float}
+\usepackage[table]{xcolor}
+\usepackage{booktabs, array, tabularx, float}
 \usepackage{graphicx}
-\usepackage{xcolor}
 \usepackage{enumitem}
-\usepackage[hidelinks]{hyperref}
-\graphicspath{{../outputs/figures/}}
-\setlist{nosep, leftmargin=*}
-\setlength{\parskip}{3pt}
-\setlength{\parindent}{0pt}
-\setlength{\emergencystretch}{2em}
+\usepackage[font=small, labelfont={bf,sf}, skip=4pt]{caption}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage[colorlinks=true, linkcolor=accent, urlcolor=accent]{hyperref}
 
-\title{\vspace{-1.2cm}RAG Assignment: Baseline vs.\ Re-Ranking}
-\author{Shreyas Deb}
-\date{October 2026}
+\definecolor{accent}{HTML}{1F4E8C}
+\definecolor{rule}{HTML}{C9CED6}
+\definecolor{rowtint}{HTML}{F3F5F8}
+\graphicspath{{../outputs/figures/}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\setlength{\emergencystretch}{2em}
+\brokenpenalty=10000 \widowpenalty=10000 \clubpenalty=10000
+\setlist{nosep, leftmargin=1.2em, itemsep=2pt}
+\renewcommand{\arraystretch}{1.15}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\titleformat{\section}{\sffamily\Large\bfseries\color{accent}}{\thesection}{0.6em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries}{\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{12pt}{4pt}
+\titlespacing*{\subsection}{0pt}{8pt}{2pt}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{\color{rule}\hrule height \headrulewidth}
+\fancyhead[L]{\sffamily\small RAG: Baseline vs.\ Re-Ranking}
+\fancyhead[R]{\sffamily\small Shreyas Deb}
+\fancyfoot[C]{\sffamily\small\thepage}
+\fancypagestyle{first}{\fancyhf{}\renewcommand{\headrulewidth}{0pt}\fancyfoot[C]{\sffamily\small\thepage}}
 
 \begin{document}
-\maketitle
-\begin{center}
-\textbf{Code:} \url{https://github.com/shrey715/shiori} \quad
-\textbf{Document:} ICC Men's T20 World Cup 2026 Playing Conditions (106 pages)
-\end{center}
+\thispagestyle{first}
+
+% ---------- title block ----------
+{\sffamily
+{\LARGE\bfseries\color{accent} RAG: Baseline Retrieval vs.\ Cross-Encoder Re-Ranking}\\[4pt]
+{\large Shreyas Deb} \hfill {\small October 2026}\\[2pt]
+{\small Code: \url{https://github.com/shrey715/shiori}}\\[1pt]
+{\small Document: ICC Men's T20 World Cup 2026 Playing Conditions (106 pages)}
+}
+\vspace{2pt}
+{\color{rule}\hrule height 0.8pt}
+\vspace{6pt}
 
 \section*{Setup}
 
-\begin{itemize}
-  \item \textbf{Document.} I picked the ICC T20 World Cup 2026 playing conditions because they are full of ``unless / except / shall not'' clauses, and the appendices (DRS, Super Over, warm-up matches, reserve day) override the main rules. The PDF is from February 2026, so the LLM can't have seen it.
-  \item \textbf{Chunking.} I split by clause number (e.g.\ 9.1, 9.1.1), merged consecutive clauses of the same section up to $\sim$180 tokens, and dropped headers, diagram labels and blank forms. That gave \textbf{440 chunks}. I kept them small on purpose: with big chunks the answer is almost always in the top 3 already. Every chunk exists as \textbf{A} (plain text) and \textbf{B} (section title + text).
-  \item \textbf{Models.} Bi-encoders: \texttt{all-MiniLM-L6-v2} and \texttt{bge-small-en-v1.5} (FAISS, exact cosine). Re-rankers: \texttt{ms-marco-MiniLM-L6-v2} (used for Answer 2) and \texttt{bge-reranker-base} (rankings only). LLM: \texttt{Qwen3-32B-AWQ} on vLLM over 4$\times$RTX 2080 Ti, temperature 0.
-  \item \textbf{Questions.} 40 questions in 4 tiers of 10, each harder than the last: direct wording, fan paraphrase, exceptions/negations, and traps/cross-references. Each has a gold chunk and an expected answer, checked against the rule text.
-  \item \textbf{Grading.} Every answer (No RAG, Answer 1, Answer 2) was graded against the expected answer as correct (1), partial (0.5), wrong or abstain (0), by the same LLM with a fixed rubric. A blind second grader (Claude Haiku) agreed exactly on 79\% and within one step on 97\%. I fixed the 5 clear grader errors by hand.
-\end{itemize}
+\begin{tabularx}{\linewidth}{@{}L{2.2cm}Y@{}}
+\textbf{Document} & The ICC T20 World Cup 2026 playing conditions. I picked them because they are full of ``unless / except / shall not'' clauses, and the appendices (DRS, Super Over, warm-up matches, reserve day) override the main rules. The PDF is from February 2026, so the LLM can't have seen it. \\
+\textbf{Chunking} & Split by clause number (e.g.\ 9.1, 9.1.1), consecutive clauses of a section merged up to $\sim$180 tokens; headers, diagram labels and blank forms dropped. \textbf{440 chunks}, kept small on purpose: with big chunks the answer is almost always in the top 3 already. Every chunk exists as \textbf{A} (plain text) and \textbf{B} (section title + text). \\
+\textbf{Models} & Bi-encoders: \texttt{all-MiniLM-L6-v2}, \texttt{bge-small-en-v1.5} (FAISS, exact cosine). Re-rankers: \texttt{ms-marco-MiniLM-L6-v2} (used for Answer 2), \texttt{bge-reranker-base} (rankings only). LLM: \texttt{Qwen3-32B-AWQ} on vLLM over 4$\times$RTX 2080 Ti, temperature 0. \\
+\textbf{Questions} & 40 questions in 4 tiers of 10, each harder than the last: direct wording, fan paraphrase, exceptions/negations, traps/cross-references. Each has a gold chunk and an expected answer, checked against the rule text. \\
+\textbf{Grading} & Every answer (No RAG, Answer 1, Answer 2) graded against the expected answer as correct (1), partial (0.5), wrong or abstain (0), by the same LLM with a fixed rubric. A blind second grader (Claude Haiku) agreed exactly on 79\% and within one step on 97\%; I fixed the 5 clear grader errors by hand. \\
+\end{tabularx}
 
 \section{Bi-encoder vs.\ Cross-encoder}
 
@@ -49,49 +78,48 @@ A \textbf{cross-encoder} takes the question and a chunk \emph{together} as one i
 \subsection{Overall}
 Re-ranking improved MRR in all 4 setups and hit@3 in 3 of 4 (Table~\ref{tab:ret}). Over all setups it moved the gold chunk from rank 4--10 into the top 3 in \textbf{16 cases}, and pushed it out of the top 3 in 9. 15 of the 16 fixes are in tiers 3--4; tier 1 was already 100\%.
 
-The bigger \texttt{bge-reranker-base} (278M params) was about the same as the 22M \texttt{ms-marco} one, so a bigger re-ranker didn't buy much here. Adding section titles to chunks (B) didn't help consistently either.
-
 \begin{table}[H]
 \centering\small
-\begin{tabular}{lcccc}
+\rowcolors{2}{rowtint}{white}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-setup & hit@3 base $\to$ re-ranked & MRR@10 base $\to$ re-ranked & answer score A1 $\to$ A2 \\
+\textbf{setup} & \textbf{hit@3} base $\to$ re-ranked & \textbf{MRR@10} base $\to$ re-ranked & \textbf{answer score} A1 $\to$ A2 \\
 \midrule
-MiniLM, plain (A)  & 0.65 $\to$ 0.70 & 0.53 $\to$ 0.65 & 0.68 $\to$ 0.65 \\
-MiniLM, titled (B) & 0.62 $\to$ 0.68 & 0.50 $\to$ 0.65 & 0.59 $\to$ 0.64 \\
-bge, plain (A)     & 0.70 $\to$ 0.78 & 0.63 $\to$ 0.69 & 0.65 $\to$ 0.72 \\
-bge, titled (B)    & 0.75 $\to$ 0.75 & 0.60 $\to$ 0.69 & 0.70 $\to$ 0.72 \\
+MiniLM, plain (A)  & 0.65 $\to$ \textbf{0.70} & 0.53 $\to$ \textbf{0.65} & \textbf{0.68} $\to$ 0.65 \\
+MiniLM, titled (B) & 0.62 $\to$ \textbf{0.68} & 0.50 $\to$ \textbf{0.65} & 0.59 $\to$ \textbf{0.64} \\
+bge, plain (A)     & 0.70 $\to$ \textbf{0.78} & 0.63 $\to$ \textbf{0.69} & 0.65 $\to$ \textbf{0.72} \\
+bge, titled (B)    & 0.75 $\to$ 0.75          & 0.60 $\to$ \textbf{0.69} & 0.70 $\to$ \textbf{0.72} \\
 \bottomrule
 \end{tabular}
 \caption{Retrieval and answer quality before and after re-ranking with \texttt{ms-marco} (40 questions).}
 \label{tab:ret}
 \end{table}
 
+The bigger \texttt{bge-reranker-base} (278M params) was about the same as the 22M \texttt{ms-marco} one, so a bigger re-ranker didn't buy much here. Adding section titles to chunks (B) didn't help consistently either.
 
 \subsection{Failure cases fixed by re-ranking}
 In every case below the important chunk sat outside the top 3, so the LLM in Pipeline 1 never saw it.
 
 \begin{table}[H]
-\centering\small
-\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
-\begin{tabular}{L{3.0cm}L{1.7cm}L{1.8cm}L{4.1cm}L{4.1cm}}
+\centering\footnotesize
+\begin{tabularx}{\linewidth}{@{}L{2.9cm}L{1.6cm}L{1.9cm}YY@{}}
 \toprule
-question & type & gold chunk & Answer 1 (baseline) & Answer 2 (re-ranked) \\
+\textbf{question} & \textbf{type} & \textbf{gold chunk} & \textbf{Answer 1 (baseline)} & \textbf{Answer 2 (re-ranked)} \\
 \midrule
-q23: can a concussed player be replaced by someone not on the list? & exception & c008 (1.2.7.1.3.4) \textbf{\#9 $\to$ \#3} & ``No, a concussed player can only be replaced by a player who is on the nominated list.'' \textbf{Omits the exception.} & ``Yes, \ldots{} but only under exceptional circumstances. \ldots{} the ICC Match Referee will consider the request.'' Correct. \\
-q35: 7-over rain game, max overs per bowler? & buried chunk & c091 (13.9.2.2) \textbf{\#4 $\to$ \#1} & ``1 over \ldots{} no bowler may bowl more than one-fifth'' (the rule for 10+ overs). \textbf{Misstates the rule.} & ``2 overs, as per rule 13.9.2.2.'' Correct. \\
-q28: can the non-striker sneak a run during the run-up? & negation & c314 (41.16) \textbf{\#5 $\to$ \#2} & ``Not in the context.'' (top 3 were the wrong run-out clauses) & ``No \ldots{} Dead ball, \ldots{} disallow the attempted run, and award 5 Penalty runs.'' Correct. \\
-q36: start time of the final on the reserve day? & keyword trap & c069 (12.7.1) \textbf{\#4 $\to$ \#2} & ``The final will start \ldots{} when the coin toss takes place'', no time given. \textbf{Made up.} & ``The final starts at 19:00.'' Correct. \\
-q38: free hit called wide, can he be stumped? & exception over 2 chunks & c175 \#4 $\to$ \#3, c174 \#6 $\to$ \#2 & ``Yes, \ldots{} the batter can be out stumped.'' \textbf{Wrong:} uses the general wide rule. & ``No, \ldots{} only \ldots{} the circumstances that apply for a No ball, even if \ldots{} called Wide.'' Correct. \\
+q23: can a concussed player be replaced by someone not on the list? & exception & c008 (1.2.7.1.3.4) \textbf{\#9 $\to$ \#3} & ``No, a concussed player can only be replaced by a player who is on the nominated list.'' \textbf{Omits the exception.} & ``Yes, \ldots{} but only under exceptional circumstances. \ldots{} the ICC Match Referee will consider the request.'' Correct. \\ \addlinespace[3pt]
+q35: 7-over rain game, max overs per bowler? & buried chunk & c091 (13.9.2.2) \textbf{\#4 $\to$ \#1} & ``1 over \ldots{} no bowler may bowl more than one-fifth'' (the rule for 10+ overs). \textbf{Misstates the rule.} & ``2 overs, as per rule 13.9.2.2.'' Correct. \\ \addlinespace[3pt]
+q28: can the non-striker sneak a run during the run-up? & negation & c314 (41.16) \textbf{\#5 $\to$ \#2} & ``Not in the context.'' (top 3 were the wrong run-out clauses) & ``No \ldots{} Dead ball, \ldots{} disallow the attempted run, and award 5 Penalty runs.'' Correct. \\ \addlinespace[3pt]
+q36: start time of the final on the reserve day? & keyword trap & c069 (12.7.1) \textbf{\#4 $\to$ \#2} & ``The final will start \ldots{} when the coin toss takes place'', no time given. \textbf{Made up.} & ``The final starts at 19:00.'' Correct. \\ \addlinespace[3pt]
+q38: free hit called wide, can he be stumped? & exception over 2 chunks & c175 \#4 $\to$ \#3, c174 \textbf{\#6 $\to$ \#2} & ``Yes, \ldots{} the batter can be out stumped.'' \textbf{Wrong:} uses the general wide rule. & ``No, \ldots{} only \ldots{} the circumstances that apply for a No ball, even if \ldots{} called Wide.'' Correct. \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \caption{Showcase failures (setups: q23, q35 MiniLM-A; q28 MiniLM-B; q36, q38 bge-A).}
 \end{table}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.95\linewidth]{showcase_bump.png}
-\caption{Rank of each top-10 chunk before and after re-ranking for the cases above; gold in blue, shaded = top 3 sent to the LLM.}
+\includegraphics[width=\linewidth]{showcase_bump.png}
+\caption{Rank of each top-10 chunk before and after re-ranking for the cases above. Gold in blue; shaded = top 3 sent to the LLM.}
 \end{figure}
 
 So the baseline failed in exactly the ways the assignment describes: it \textbf{left out an exception} (q23, q38), \textbf{applied the wrong rule} (q35), \textbf{made something up} (q36), or gave up because the right clause wasn't there (q28). In 12 of the 16 rank fixes the answer improved too.
@@ -108,7 +136,7 @@ No. Without the document the LLM is \textbf{wrong 55\% of the time} and almost n
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.55\linewidth]{scope_scores.png}
+\includegraphics[width=0.62\linewidth]{scope_scores.png}
 \caption{Mean answer score by question type and mode.}
 \label{fig:scope}
 \end{figure}
@@ -119,16 +147,16 @@ All on one RTX 2080 Ti (MiniLM + \texttt{ms-marco}), mean over 40 queries after 
 
 \begin{table}[H]
 \centering\small
-\begin{tabular}{lr}
+\begin{tabular}{@{}lr@{}}
 \toprule
-stage & ms / query \\
+\textbf{stage} & \textbf{ms / query} \\
 \midrule
 query embedding & 6.0 \\
 FAISS search (top 10) & 0.05 \\
 cross-encoder on 10 pairs & 14.2 \\
 \midrule
-\textbf{Pipeline 1 (baseline retrieval)} & \textbf{6.2} \\
-\textbf{Pipeline 2 (retrieval + re-ranking)} & \textbf{19.8} \\
+\rowcolor{rowtint}\textbf{Pipeline 1 (baseline retrieval)} & \textbf{6.2} \\
+\rowcolor{rowtint}\textbf{Pipeline 2 (retrieval + re-ranking)} & \textbf{19.8} \\
 \midrule
 cross-encoder on all 440 chunks & 295 \\
 Pipeline 2, 40 queries batched & 7.3 \\
