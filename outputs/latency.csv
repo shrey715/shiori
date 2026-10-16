@@ -1,0 +1,15 @@
+device,stage,mean ms,std ms
+GPU,query embedding,7.73,0.88
+GPU,vector search (top 10),0.06,0.0
+GPU,re-rank 10 pairs,14.73,0.83
+GPU,Pipeline 1 retrieval,6.25,0.72
+GPU,Pipeline 2 retrieval,23.72,2.3
+GPU,cross-encoder on all 440 chunks,305.86,6.3
+GPU,"Pipeline 2, 40 queries batched (per query)",7.74,
+CPU,query embedding,10.25,0.8
+CPU,vector search (top 10),0.04,0.01
+CPU,re-rank 10 pairs,106.4,8.53
+CPU,Pipeline 1 retrieval,8.9,0.64
+CPU,Pipeline 2 retrieval,114.38,7.23
+CPU,cross-encoder on all 440 chunks,5041.93,85.61
+CPU,"Pipeline 2, 40 queries batched (per query)",113.0,
