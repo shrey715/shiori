@@ -1,8 +1,8 @@
 stage,mean ms,std ms
-query embedding,7.03,0.39
-vector search (top 10),0.06,0.0
-re-rank 10 pairs,14.0,1.1
-Pipeline 1 retrieval,5.92,0.1
-Pipeline 2 retrieval,19.29,1.22
-cross-encoder on all 440 chunks,295.94,6.24
-"Pipeline 2, 40 queries batched (per query)",7.36,
+query embedding,5.98,0.68
+vector search (top 10),0.05,0.0
+re-rank 10 pairs,14.18,1.08
+Pipeline 1 retrieval,6.2,0.74
+Pipeline 2 retrieval,19.8,2.04
+cross-encoder on all 440 chunks,295.09,8.06
+"Pipeline 2, 40 queries batched (per query)",7.34,

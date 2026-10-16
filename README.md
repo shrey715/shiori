@@ -36,7 +36,7 @@ Everything is in one notebook: [`rag_reranking.ipynb`](rag_reranking.ipynb).
 
 Without the document the LLM is wrong 55% of the time.
 
-**Latency** (per query, GPU): Pipeline 1 **5.9 ms**, Pipeline 2 **19.3 ms** (3.3×). A cross-encoder over all 440 chunks takes **296 ms**, against 0.06 ms for the FAISS search.
+**Latency** (per query, GPU): Pipeline 1 **6.2 ms**, Pipeline 2 **19.8 ms** (3.2×). A cross-encoder over all 440 chunks takes **295 ms**, against 0.05 ms for the FAISS search.
 
 ## Setup
 
