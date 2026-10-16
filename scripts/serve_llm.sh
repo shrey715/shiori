@@ -18,9 +18,9 @@
 #   (no --enforce-eager: CUDA graphs stay on for faster decoding)
 set -u
 cd "$(dirname "$0")/.."
-VENV=${VLLM_VENV:-/ssd_scratch/shreyas.deb/rag_assignment/vllm-venv}
+VENV=${VLLM_VENV:-$PWD/vllm-venv}
 export HF_HOME=$PWD/models/hf HF_HUB_OFFLINE=1
-CACHE=/ssd_scratch/shreyas.deb/rag_assignment/cache          # compile caches on scratch (~/.triton is a dangling link)
+CACHE=${LLM_CACHE_DIR:-$PWD/models/cache}                    # torch.compile / Triton caches next to the model weights
 export TRITON_CACHE_DIR=$CACHE/triton TORCHINDUCTOR_CACHE_DIR=$CACHE/inductor VLLM_CACHE_ROOT=$CACHE/vllm
 mkdir -p $TRITON_CACHE_DIR $TORCHINDUCTOR_CACHE_DIR $VLLM_CACHE_ROOT
 exec "$VENV/bin/vllm" serve Qwen/Qwen3-32B-AWQ \

@@ -4,6 +4,7 @@ PLAN.md
 # Symlinks to /ssd_scratch (venv, model weights)
 .venv
 models
+vllm-venv
 # data/ holds the copyrighted ICC PDF and chunks built from it; never commit
 data
 
