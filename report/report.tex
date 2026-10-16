@@ -10,6 +10,9 @@
 \usepackage[table]{xcolor}
 \usepackage{booktabs, array, tabularx, float}
 \usepackage{graphicx}
+\usepackage{amsmath, amssymb}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta, fit, calc}
 \usepackage{enumitem}
 \usepackage[font=small, labelfont={bf,sf}, skip=4pt]{caption}
 \usepackage{titlesec}
@@ -48,12 +51,10 @@
 
 % ---------- title block ----------
 {\sffamily
-{\LARGE\bfseries\color{accent} RAG: Baseline Retrieval vs.\ Cross-Encoder Re-Ranking}\\[4pt]
-{\large Shreyas Deb} \hfill {\small October 2026}\\[2pt]
-{\small Code: \url{https://github.com/shrey715/shiori}}\\[1pt]
-{\small Document: ICC Men's T20 World Cup 2026 Playing Conditions (106 pages)}
+{\LARGE\bfseries\color{accent} RAG: Baseline Retrieval vs.\ Cross-Encoder Re-Ranking}\\[5pt]
+{\large Shreyas Deb \quad{\color{rule}|}\quad Roll No.\ 2023113024} \hfill {\small\url{https://github.com/shrey715/shiori}}
 }
-\vspace{2pt}
+\vspace{3pt}
 {\color{rule}\hrule height 0.8pt}
 \vspace{6pt}
 
@@ -69,9 +70,68 @@
 
 \section{Bi-encoder vs.\ Cross-encoder}
 
-A \textbf{bi-encoder} encodes the question and each chunk \emph{separately} into one vector each, and relevance is just their cosine similarity. Chunk vectors don't depend on the question, so I compute them once, store them in FAISS, and a search is one dot product per chunk. The catch is that the whole chunk gets squashed into a single vector before the question even exists, so it mostly captures topic and word overlap. ``can'' vs.\ ``cannot'', or a rule vs.\ its exception, end up very close in that space.
+Both of my models use the \emph{same} backbone: a 6-layer MiniLM transformer (384 dims, 12 attention heads). The difference is only in \textbf{how the question and the chunk are fed in} (Figure~\ref{fig:arch}), and that changes everything about cost and accuracy (Table~\ref{tab:arch}).
 
-A \textbf{cross-encoder} takes the question and a chunk \emph{together} as one input, so every question token attends to every chunk token, and it outputs one relevance score. It can check whether the chunk actually answers \emph{this} question (the right condition, the right exception, the right match type). It's much more accurate, but nothing can be precomputed: every (question, chunk) pair needs a full forward pass. That's why it's only used to re-rank the bi-encoder's top 10.
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  font=\sffamily\footnotesize, >={Stealth[length=4pt]},
+  box/.style={draw=accent!70, rounded corners=2pt, fill=accent!6, align=center, inner sep=3pt, minimum height=0.6cm},
+  encbox/.style={box, fill=accent!18, minimum height=0.75cm},
+  inpbox/.style={box, fill=white, draw=gray!60},
+  outbox/.style={box, fill=white, draw=accent, very thick},
+  note/.style={font=\sffamily\scriptsize\itshape, text=accent!80!black, align=center}]
+% ---- bi-encoder ----
+\node[font=\sffamily\small\bfseries, text=accent] at (1.6,4.3) {Bi-encoder};
+\node[inpbox, minimum width=2.4cm] (q) at (0,0) {question};
+\node[inpbox, minimum width=2.4cm] (d) at (3.2,0) {chunk};
+\node[encbox, minimum width=2.4cm] (eq) at (0,1.15) {MiniLM encoder};
+\node[encbox, minimum width=2.4cm] (ed) at (3.2,1.15) {MiniLM encoder};
+\node[box, minimum width=2.4cm] (u) at (0,2.3) {mean-pool $\to\mathbf{u}$};
+\node[box, minimum width=2.4cm] (v) at (3.2,2.3) {mean-pool $\to\mathbf{v}$};
+\node[outbox] (cos) at (1.6,3.45) {score $=\cos(\mathbf{u},\mathbf{v})$};
+\draw[->] (q) -- (eq); \draw[->] (d) -- (ed); \draw[->] (eq) -- (u); \draw[->] (ed) -- (v);
+\draw[->] (u) -- (cos); \draw[->] (v) -- (cos);
+\node[note] at (1.6,-0.8) {encoded separately: no interaction until the cosine\\chunk vectors $\mathbf{v}$ precomputed once, stored in FAISS};
+% ---- cross-encoder ----
+\node[font=\sffamily\small\bfseries, text=accent] at (9.0,4.3) {Cross-encoder};
+\node[inpbox, minimum width=4.6cm] (pair) at (9.0,0) {\texttt{[CLS]} question \texttt{[SEP]} chunk \texttt{[SEP]}};
+\node[encbox, minimum width=4.6cm] (ce) at (9.0,1.15) {MiniLM encoder (full self-attention over both)};
+\node[box, minimum width=4.6cm] (cls) at (9.0,2.3) {\texttt{[CLS]} vector $\to$ linear layer};
+\node[outbox] (sc) at (9.0,3.45) {score $=$ one relevance logit};
+\draw[->] (pair) -- (ce); \draw[->] (ce) -- (cls); \draw[->] (cls) -- (sc);
+\node[note] at (9.0,-0.8) {question and chunk in one sequence: every token attends to every token\\nothing precomputable: one full pass per (question, chunk) pair};
+\draw[gray!40] (5.55,-1.2) -- (5.55,4.4);
+\end{tikzpicture}
+\caption{Same transformer, two ways of using it.}
+\label{fig:arch}
+\end{figure}
+
+\begin{align*}
+\text{bi-encoder: } & s(q,d) = \cos\big(E(q),\,E(d)\big), \quad E(x) = \text{mean-pool}\big(\text{MiniLM}(x)\big) \\
+\text{cross-encoder: } & s(q,d) = \mathbf{w}^\top\, \mathbf{h}_{\texttt{[CLS]}}\big(\text{MiniLM}(\texttt{[CLS]}\ q\ \texttt{[SEP]}\ d\ \texttt{[SEP]})\big)
+\end{align*}
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}L{2.7cm}YY@{}}
+\toprule
+\textbf{aspect} & \textbf{Bi-encoder} & \textbf{Cross-encoder} \\
+\midrule
+input & question and chunk encoded \emph{separately} & question and chunk joined into \emph{one} sequence \\
+interaction & none until the final dot product (``late'') & in every layer, each question token attends to each chunk token (``early'') \\
+output & two 384-d vectors, compared by cosine & one relevance score \\
+precompute & all chunk vectors, once & nothing, the score depends on the question \\
+cost per query & 1 encoder pass + $N$ dot products & $N$ encoder passes \\
+trained to & put sentences with similar meaning close together & judge whether this passage answers this query (MS MARCO labels) \\
+good at & fast recall of the right \emph{topic} & fine detail: conditions, exceptions, negation \\
+\bottomrule
+\end{tabularx}
+\caption{What the architecture difference means in practice.}
+\label{tab:arch}
+\end{table}
+
+\textbf{Why it matters, with a real example (q35).} For ``In a 7-overs-a-side rain game, what's the most a single bowler can send down?'' the bi-encoder ranked clause 13.9.1 (``No bowler shall bowl more than 4 overs'') first, cosine 0.575, and the actual answer, 13.9.2.2 (``between 5 and 9 overs \ldots{} no more than two overs''), fourth, cosine 0.519. Both chunks are about overs per bowler, so their vectors sit close to the question; the single vector has no room for the ``5 to 9 overs'' condition. The cross-encoder reads ``7-overs'' next to ``between 5 and 9 overs'' in the same attention pass and flips them: 13.9.2.2 scores $-3.34$ (\#1) vs.\ $-4.74$ for 13.9.1. Same model size, but because the two texts meet inside the network, it can check the condition instead of just the topic.
 
 \section{Qualitative \& Rank Shift Analysis}
 
@@ -100,7 +160,7 @@ The bigger \texttt{bge-reranker-base} (278M params) was about the same as the 22
 \subsection{Failure cases fixed by re-ranking}
 In every case below the important chunk sat outside the top 3, so the LLM in Pipeline 1 never saw it.
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering\footnotesize
 \begin{tabularx}{\linewidth}{@{}L{2.9cm}L{1.6cm}L{1.9cm}YY@{}}
 \toprule
@@ -116,7 +176,7 @@ q38: free hit called wide, can he be stumped? & exception over 2 chunks & c175 \
 \caption{Showcase failures (setups: q23, q35 MiniLM-A; q28 MiniLM-B; q36, q38 bge-A).}
 \end{table}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{showcase_bump.png}
 \caption{Rank of each top-10 chunk before and after re-ranking for the cases above. Gold in blue; shaded = top 3 sent to the LLM.}
@@ -134,18 +194,18 @@ So the baseline failed in exactly the ways the assignment describes: it \textbf{
 \subsection{Is it just the LLM's own knowledge?}
 No. Without the document the LLM is \textbf{wrong 55\% of the time} and almost never says it doesn't know. Splitting the questions into general cricket law vs.\ tournament-specific rules makes it clear (Figure~\ref{fig:scope}): the model knows general laws (0.53) but not this tournament's rules (0.20). On those, RAG takes it to 0.64, and re-ranking to \textbf{0.73}. On general laws re-ranking slightly hurt (0.67 $\to$ 0.63), mostly because of the q22 regression.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
 \centering
-\includegraphics[width=0.62\linewidth]{scope_scores.png}
+\includegraphics[width=0.55\linewidth]{scope_scores.png}
 \caption{Mean answer score by question type and mode.}
 \label{fig:scope}
 \end{figure}
 
 \section{Latency Profiling}
 
-All on one RTX 2080 Ti (MiniLM + \texttt{ms-marco}), mean over 40 queries after 5 warm-ups, with \texttt{cuda.synchronize()} around each call.
+All on one RTX 2080 Ti (MiniLM + \texttt{ms-marco}), mean over 40 queries after 5 warm-ups, with \texttt{cuda.synchronize()} around each call (Table~\ref{tab:lat}).
 
-\begin{table}[H]
+\begin{table}[htbp]
 \centering\small
 \begin{tabular}{@{}lr@{}}
 \toprule
@@ -163,6 +223,7 @@ Pipeline 2, 40 queries batched & 7.3 \\
 \bottomrule
 \end{tabular}
 \caption{Retrieval latency per query on GPU.}
+\label{tab:lat}
 \end{table}
 
 Re-ranking adds about \textbf{14 ms per query (3.2$\times$)}, almost all of it the cross-encoder; the FAISS search itself is basically free. In absolute terms that's cheap, and small next to the LLM call (seconds), so for these accuracy gains it's clearly worth it. Batching queries brings Pipeline 2 down to 7 ms each.
