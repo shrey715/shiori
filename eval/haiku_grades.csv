@@ -1,0 +1,176 @@
+qid,answer_sha,label,reason
+q01,05bfcade2004,correct,"States 11 players per side, matching reference"
+q01,0cc7c8b7c6eb,correct,11 players per side
+q01,7f74851675dc,correct,"States 11 players per side, matching reference"
+q02,233325b031c2,correct,Maximum of 4 substitute fielders
+q02,adb209892b2b,wrong,Says three substitutes; reference is four
+q03,2b0b5fbe3efd,correct,States 14.11 overs per hour
+q03,c330484b9ab6,wrong,"Gives 14.4 overs per hour, reference says 14.11"
+q04,48f66c2f63b8,correct,"States 4 overs for full 20-over innings, matching reference"
+q04,e1020c3e8bc4,correct,4 overs maximum per bowler in full innings
+q05,11c9114f3c5d,wrong,Gives 15 minutes; reference says up to 7 minutes
+q05,8c1338ee1d66,correct,Up to 7 minutes at batting-second captain's request
+q06,10527b8eafc3,wrong,Says one unsuccessful review; reference is two
+q06,41e81c72e859,correct,Two unsuccessful reviews per innings
+q06,4afcb955eb7f,correct,States two unsuccessful reviews per innings
+q07,5456eaf0e56f,correct,"First 6 overs, with reduced-innings adjustment consistent with reference"
+q07,699c9b0f88e7,correct,First 6 overs of each innings
+q07,ed096e42ccab,partial,"Correct 6 overs, omits the ""uninterrupted match"" condition"
+q08,0b6658114ded,correct,One fast short-pitched delivery per over
+q08,9fcc1cfc0e49,wrong,Says 2 fast short-pitched deliveries; reference says 1
+q08,d1f3a28067bd,correct,One fast short-pitched delivery per over
+q08,fa40994ff059,correct,One fast short-pitched delivery per over
+q09,2683b9f264bd,correct,States 3 yards (2.74 m)
+q09,7beb1a737741,correct,"3 yards (2.74 m), matching reference"
+q09,f7dbdba73695,wrong,Gives 30 yards; reference says 3 yards (2.74 m)
+q10,4e69c4154a0e,partial,20 minutes correct; omits 10-minute minimum
+q10,add639555294,wrong,"Says 10 minutes; reference is 20, with 10 as the minimum"
+q11,682edf6ceb29,abstain,"Says ""Not in the context"""
+q11,c20b594aa5ab,partial,"Says yes, but omits 7-minute limit and captain's request"
+q12,039c1fc4c116,correct,"Not out unless ball would have hit stumps, matching reference"
+q12,424feab489d1,correct,Not out unless tracking shows ball hitting stumps
+q12,974e5c94253f,partial,"Not out correct, but omits must-hit-wicket condition, adds wide tangent"
+q12,ad9028c2bb7d,correct,Not out unless DRS shows hitting; matches reference
+q12,b43fd579a8d1,partial,"Says ""depends on DRS""; never states not out, no hit-wicket condition"
+q12,e2a5d87504e5,correct,Not out unless ball-tracking shows hitting; matches reference
+q13,099c30d97a8c,partial,"Dead ball and unfair play right; omits no batter out, 5 runs"
+q13,2a7b6553e7dd,partial,"Unfair play and dead ball, but omits no-out, penalty runs, ball not counting"
+q13,37cef65a71b0,wrong,"Calls it a no-ball; reference says dead ball, 5 penalty runs"
+q13,76ab76be0210,partial,Dead ball right; omits no-out and penalty runs
+q13,804b80998ca9,partial,"Dead ball right; omits 5 penalty runs, no batter out, ball not counted"
+q13,84610788e77e,partial,Dead ball right; omits no-out and penalty runs
+q13,968bc5ba857a,partial,Dead ball right; omits no-out and 5 penalty runs
+q13,b3545b86e1ec,partial,Dead ball and no-out right; omits 5 penalty runs and ball not counted
+q14,286cae203d17,wrong,No dead ball; wrong rule on who finishes the over
+q14,3ab9a853dd73,correct,"Dead ball, another bowler same end, consecutive-over restriction"
+q14,4ef3113f8c52,correct,"Dead ball, another bowler completes over from same end"
+q14,943adb008423,correct,"Dead ball, another bowler same end, no consecutive overs"
+q14,efc5e9633ef3,correct,"Dead ball, another bowler same end, not consecutive-over bowler"
+q15,3200d124cd85,correct,States 60 seconds to start next over
+q15,40f1f88bd1c7,correct,Within 60 seconds
+q15,682edf6ceb29,abstain,Says not in the context
+q15,738dfd7a6142,correct,"Within 60 seconds, matching reference"
+q16,252565ed2cce,wrong,Allows spare helmets at other spots; reference says only behind keeper
+q16,78745288dfd1,correct,"Only behind wicket-keeper, in line with stumps"
+q16,aeca25a6f15d,correct,"Only behind wicket-keeper, in line with both stumps"
+q16,f7603454b45f,correct,"Only behind wicket-keeper, in line with stumps"
+q17,0a03819bf2c4,partial,Umpires decide and wet alone insufficient; omits match referee consultation
+q17,2085f8572b82,partial,"Umpires decide correctly; wet-alone and referee nuance missing, conflicting phrasing"
+q17,258d7758f927,partial,Umpires decide correctly; omits referee consultation and wet-alone limit
+q17,78e3bf670420,partial,"Umpires decide correctly, but says wet outfield alone can suffice; misses referee/wet-alone nuance"
+q17,e65070eb3871,partial,Umpires decide and wet-outfield point right; omits referee consultation
+q17,ec2c822346ee,partial,"Right umpires/wet rule, but adds captain consultation, omits match referee role"
+q18,85d374eef7f1,partial,1:30 correct; omits timed-out dismissal
+q18,94190e2c62ab,partial,Gives 90 seconds but omits the timed-out consequence
+q19,131bfe2907fd,partial,"Batter picks six balls, but omits umpire alternative and 5 penalty runs"
+q19,227fc75410f4,wrong,Umpires choose replacement; reference says batter picks from six balls
+q19,688a179cbe2a,partial,"Batter picks six balls, but omits umpire alternative and penalty runs"
+q20,cd0727e60b5f,wrong,Says no drinks breaks; reference says two
+q20,dd73ea3118a6,correct,Two drinks breaks for 15-over innings
+q21,1707a85b0144,partial,"Correct ""no"" but overbroad; omits run-out exception"
+q21,1aaa34cb470b,correct,"Not out; no-ball limits dismissals, run out noted"
+q21,682edf6ceb29,abstain,"Says ""Not in the context"""
+q21,6c000ddfb830,partial,"Not out, but omits run out and obstruction exceptions"
+q21,abf1238adf86,partial,Implies not out but never directly rules out the catch
+q21,b2ac43e6695a,partial,Muddled; allows run out but never clearly states not out
+q21,b91916102eef,partial,"Not out, but wrongly rules out run out, which reference allows"
+q21,f5c05432da92,partial,"Not out conclusion right, but omits run out and obstruction exceptions"
+q22,01374e84e164,wrong,Says not out; reference says out
+q22,0a01961e78cb,correct,"Yes, run out"
+q22,11ec9b3523ad,wrong,"Says not out on wide; reference says yes, run out or stumped possible"
+q22,62132130bec0,correct,"Yes, out run out is one of listed modes"
+q22,682edf6ceb29,abstain,"Says ""Not in the context"""
+q22,9d7df29b9298,correct,"Yes, out; run out named as a mode"
+q22,c4757f89e308,correct,"Yes, run out is one of listed modes"
+q23,6494ca0b60e7,correct,Yes only in exceptional circumstances via match referee
+q23,7b46153e232a,partial,"Says no, but omits match referee exceptional-circumstances exception"
+q23,92147ec0805e,partial,Says No flatly; omits exceptional circumstances match referee discretion
+q23,cd6d86e19821,correct,Only in exceptional circumstances via match referee
+q23,ec39cb7ee51a,partial,"Says no, but omits match referee exceptional-circumstances exception"
+q24,457417137c19,wrong,Says roller not permitted; reference says yes for up to 7 minutes
+q24,5f8c4592f66b,wrong,Says roller refused; reference says yes for up to 7 minutes
+q24,8bf981559ef8,wrong,"Says roller not allowed; reference says yes, up to 7 minutes"
+q24,94f57fe8e4b8,wrong,Says roller not permitted; reference says yes for up to 7 minutes
+q24,b98ebfa17f1c,partial,"Yes on rolling, but omits 7-minute limit and no-significant-effect exception"
+q25,437af36ba225,correct,"No follow-on in T20, matching reference"
+q25,682edf6ceb29,abstain,Says not in the context
+q26,0a64357f4c8b,partial,Penalty only with deceptive intent; omits 5-run penalty
+q26,2e6c6de1358d,partial,Describes short run; omits no-intent exemption and 5-run penalty for deliberate
+q26,5ba7a1140712,wrong,Says penalised; reference says no without deliberate intent
+q26,a6d73389b72f,wrong,Says penalised; reference says no without deceptive intent
+q26,c41faba4336d,wrong,Says unintentional short run is not scored; reference says no penalty without intent
+q26,da33d2dd74b1,wrong,"Says yes, it is a short run; reference says no unless intent"
+q26,fb9500458936,wrong,Says penalised yes; reference says no unless intent to deceive
+q26,fee9c8a01a75,partial,"Correct ""no"" but omits deliberate short-run penalty"
+q27,048e9cc7e318,correct,"No, DRS minimums don't apply to Full Member vs Associate T20I"
+q27,1cef34e2cf6e,wrong,Says yes full camera setup required; reference says no
+q27,62ba8f71ddd1,correct,"No, DRS camera minimums don't apply to such matches"
+q27,7c703641c42e,correct,"No, DRS camera minimums don't apply"
+q27,a3d79f3deffe,correct,"No, minimum DRS camera requirements do not apply"
+q27,cbf8b743e898,correct,"No, DRS minimum camera requirements don't apply to this match type"
+q27,d29d752cbc74,correct,"No, DRS camera requirements do not apply"
+q28,03f33d06a69e,partial,"Says no and penalties, but omits bowler run-out-non-striker exception"
+q28,682edf6ceb29,abstain,"Says ""Not in the context"""
+q28,bc0c00d32e27,correct,"No, dead ball, run disallowed, 5 penalty, bowler run-out exception"
+q28,c6d89f664f8b,partial,"Correctly says no, but omits dead ball, 5 runs, run-out exception"
+q28,c7b2fea2c214,partial,Right penalties; omits bowler run-out exception
+q29,58b18f10191d,correct,"Yes, above-waist non-bouncing delivery is no ball regardless of danger"
+q29,70ec5f39d238,correct,Above-waist non-bouncing full toss is no ball regardless of danger
+q29,d0e7976adbc6,correct,"Yes, no-ball regardless of danger, matching reference"
+q29,e8919b3b4ebf,correct,"Yes, no-ball regardless of danger, matching reference"
+q30,03f25ae1c4f7,correct,Review not lost; umpire's call does not count toward limit
+q30,1194da6a9c2c,correct,Review not lost; umpire's call does not count toward limit
+q30,1b338f44848d,correct,"Not lost; umpire's call, review unchanged"
+q30,682edf6ceb29,abstain,"Says ""Not in the context"""
+q30,911c603a085f,correct,Review not lost; umpire's call does not count toward limit
+q30,a9625b9755d2,wrong,Says review is lost; reference says it is not
+q31,412591a69b0b,wrong,Says all 15 can bat; reference says max 11 per innings
+q31,4f4ddb06f8bb,wrong,Says all 15 can bat; reference says no
+q31,c0502614553b,wrong,"Says only 11 may bat, reference says no; wrong yes-direction"
+q31,d5084ec3bae8,wrong,Says all 15 can bat; reference says max 11 bat
+q31,e6d8d117bba1,wrong,Says all 15 can bat; reference says no more than 11
+q31,f0e7512e4442,wrong,Says all 15 can bat; reference says no more than 11
+q32,682edf6ceb29,abstain,Says not in the context; no Event Technical Committee answer
+q32,850c354b1388,wrong,Says coaching staff manage it; reference says Event Technical Committee
+q33,223f4020e707,wrong,Says same bowler may bowl next Super Over; reference says no
+q33,5fe80340d2ac,wrong,Says same bowler may bowl next Super Over; reference says no
+q33,682edf6ceb29,abstain,"Says ""Not in the context"""
+q33,9b9c1000a970,wrong,Says same bowler can bowl again; reference says he cannot
+q33,c5248ea1cbd4,correct,"No, previous Super Over bowler ineligible"
+q33,de44f15c6c87,correct,Previous Super Over bowler ineligible for next Super Over
+q34,50c7edbafd9f,wrong,Says no further reviews; reference says yes
+q34,74c550dd2baf,correct,"Yes, one unsuccessful review per Super Over innings"
+q34,b5eab67ac015,wrong,Says no further reviews; reference says yes per Super Over
+q34,e2a8a57b5ffc,wrong,Says no further reviews; reference says one per innings per Super Over
+q34,efc5e3bfb6ae,correct,"Yes, one unsuccessful review per innings per Super Over regardless"
+q34,f98f606e75a8,wrong,"Says no further reviews; reference says yes, per Super Over"
+q35,0e3d2935f62e,wrong,Says 1 over; reference is 2
+q35,2afe8c2c8f3b,correct,2 overs maximum in 7-over rain game
+q35,6250b3211ec4,correct,Maximum two overs per bowler
+q35,682edf6ceb29,abstain,"Says ""Not in the context"""
+q35,7a7c748666ba,wrong,Says 4 overs; reference says 2 overs
+q35,824d94c518e8,correct,2 overs maximum in 5 to 9 over innings
+q35,857545e73d9a,correct,Maximum two overs per bowler in 7-over game
+q35,d160a55d7262,correct,2 overs maximum for a single bowler
+q36,1aa6923f5608,correct,Final starts at 19:00 on reserve day
+q36,4a32d4cdbeaa,abstain,Says no specific start time given; no 19:00
+q36,64024a4f9566,abstain,Says start time not specified; no 19:00 answer
+q36,66f683b3a9e3,abstain,"Describes toss procedure, gives no 19:00 start time"
+q36,73a764c1a34e,abstain,Gives no finish time; discusses coin toss instead
+q36,d956a351b81b,correct,States 19:00 start
+q37,423676284103,wrong,Gives 6 overs; reference says 10 overs
+q37,7fc72bdc5efa,correct,10 overs minimum for batting second in final
+q37,c918bc1b7ca6,correct,10 overs minimum for a final result
+q38,1a1f34ca2c8e,wrong,Says stumped on wide free hit possible; reference says no
+q38,471f859c0988,partial,"Correct ""no"" but adds a catch claim"
+q38,61cf7a0db738,wrong,Says stumped possible; reference says no
+q38,db377a94a3b1,correct,"No, free hit limits dismissal to no-ball modes even if wide"
+q39,6604fa418238,wrong,"Says fresh ball allowed; reference says no, spare balls only"
+q39,682edf6ceb29,abstain,Says not in the context
+q40,166553a631db,partial,"Continues on reserve day, not from scratch; adds reduced-overs claim"
+q40,33ec404c24fd,wrong,Says replayed from scratch; reference says continues on reserve day
+q40,6c3b6c357987,partial,Says not necessarily from scratch but hedges between continue or replay
+q40,6de3d4d86200,wrong,Says yes to replay; reference says no
+q40,da8baeb064d4,wrong,Says replayed in full on reserve day; reference says continues
+q40,e447c7052c54,partial,Correct continuation after resumed play; wrongly says replay from scratch otherwise
+q40,f08c30a75eaa,wrong,Says replayed from scratch; reference says continues on reserve day

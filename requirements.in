@@ -8,6 +8,7 @@ pymupdf
 faiss-cpu
 numpy
 pandas
+seaborn
 tqdm
 python-dotenv
 huggingface_hub

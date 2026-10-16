@@ -1,0 +1,6 @@
+qid,answer_sha,llm_label,label,reason
+q31,412591a69b0b,correct,wrong,Says all 15 can bat; the rule allows at most 11
+q24,457417137c19,correct,wrong,Says the roller is not allowed; the rule allows up to 7 minutes
+q25,682edf6ceb29,correct,abstain,Says 'Not in the context' (no answer given)
+q12,ad9028c2bb7d,wrong,correct,Not out unless the ball would have hit the wicket: matches the rule
+q24,94f57fe8e4b8,correct,wrong,Says the roller is not allowed; the rule allows up to 7 minutes
